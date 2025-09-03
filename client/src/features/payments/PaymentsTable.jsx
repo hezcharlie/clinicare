@@ -7,7 +7,7 @@ import {
   formatCurrency,
 } from "@/utils/constants";
 import { useCallback } from "react";
-import Feedback from "./Feedback";
+import FeedBack from "./FeedBack";
 
 export default function PaymentsTable({ payments, user }) {
   const tableColumns = paymentsTableColumns.filter((column) => {
@@ -58,7 +58,7 @@ export default function PaymentsTable({ payments, user }) {
       case "action":
         return (
           <div className="flex items-center gap-4">
-            <Feedback payment={payment} />
+            <FeedBack payment={payment} />
             {payment?.status !== "confirmed" && user?.role === "patient" && (
               <Paystack payment={payment} />
             )}
