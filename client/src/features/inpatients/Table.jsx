@@ -6,7 +6,7 @@ import {
 } from "@/utils/constants";
 import { useCallback } from "react";
 import Feedback from "./Feedback";
-import EditInPatient from "./EditInPatient";
+import EditInPatient from "./EditInpatient";
 
 export default function Table({ inpatients }) {
   const renderCell = useCallback((inpatient, columnKey) => {
