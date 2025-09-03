@@ -8,6 +8,7 @@ import { useCallback } from "react";
 import Feedback from "./Feedback";
 import EditInPatient from "./EditInPatient";
 
+
 export default function Table({ inpatients }) {
   const renderCell = useCallback((inpatient, columnKey) => {
     const cellValue = inpatient[columnKey];
