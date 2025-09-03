@@ -10,32 +10,32 @@ export const cache = new NodeCache({
 //cache function to save data
 export const cacheMiddleware =
   (key, ttl = 600) =>
-    async (req, res, next) => {
-      //create unique key based on our userId, api routes and query parameters
-      const userId = req.user.id || "anonymous";
-      const cacheKey = `user_${userId}_${key}_${
-        req.originalUrl
-      }_${JSON.stringify(req.query)}`;
-      try {
-        const cachedData = cache.get(cacheKey); //retrieve data associated with cachedKey
-        if (cachedData) {
-          console.log(`Cache key found for: ${cacheKey}`);
-          return res.json(cachedData); //send saved response back to client
-        }
-        //try to save data from our response
-        const originalJSON = res.json;
-        //override res.json to cache the response
-        res.json = function (data) {
-          cache.set(cacheKey, data, ttl); //takes the key, data to be saved, and how long to be saved in cache as args
-          console.log(`Cache set for key: ${cacheKey}`);
-          return originalJSON.call(this, data); //originalJSON is the res.json first saved, the call is used to invoke the method so that the original res.json is seen with the help of te this keyword, ensuring the data can be properly passed to the original json
-        };
-        next(); //call the next event supposed to happen
-      } catch (error) {
-        console.error("Cache error", error);
-        next(error);
+  async (req, res, next) => {
+    //create unique key based on our userId, api routes and query parameters
+    const userId = req.user.id || "anonymous";
+    const cacheKey = `user_${userId}_${key}_${req.originalUrl}_${JSON.stringify(
+      req.query
+    )}`;
+    try {
+      const cachedData = cache.get(cacheKey); //retrieve data associated with cachedKey
+      if (cachedData) {
+        console.log(`Cache key found for: ${cacheKey}`);
+        return res.json(cachedData); //send saved response back to client
       }
-    };
+      //try to save data from our response
+      const originalJSON = res.json;
+      //override res.json to cache the response
+      res.json = function (data) {
+        cache.set(cacheKey, data, ttl); //takes the key, data to be saved, and how long to be saved in cache as args
+        console.log(`Cache set for key: ${cacheKey}`);
+        return originalJSON.call(this, data); //originalJSON is the res.json first saved, the call is used to invoke the method so that the original res.json is seen with the help of te this keyword, ensuring the data can be properly passed to the original json
+      };
+      next(); //call the next event supposed to happen
+    } catch (error) {
+      console.error("Cache error", error);
+      next(error);
+    }
+  };
 
 export const clearCache =
   (pattern = null, clearAll = false) =>

@@ -13,7 +13,8 @@ export const verifyAuth = tryCatchFn(async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
-    token = req.headers.authorization.split(" ")[1] //extracts the token without Bearer
+    token = req.headers.authorization.split(" ")[1]; //extracts the token without Bearer
+    // console.log("token",token);
   }
   if (!token) {
     return next(
@@ -29,27 +30,24 @@ export const verifyAuth = tryCatchFn(async (req, res, next) => {
   );
   //Check if a user exists with our decoded id
   const currentUser = await User.findById(decoded.id);
-  if(!currentUser) {
+  if (!currentUser) {
     return next(
-        unauthorizedResponse(
-            "The user belonging to this token no longer exists."
-        )
-    )
+      unauthorizedResponse("The user belonging to this token no longer exists.")
+    );
   }
   //assign our user to our request object
   req.user = currentUser;
   next(); //pass to the next event
 });
 
-
 //role based auth
 export const authorizedRoles = (...roles) => {
-return (req, res, next)=> {
-  if(!roles.includes(req.user.role)) {
-    return next(
-      forbiddenResponse("You do not have permission to perform this action")
-    )
-  }
-  next();
-}
-}
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        forbiddenResponse("You do not have permission to perform this action")
+      );
+    }
+    next();
+  };
+};

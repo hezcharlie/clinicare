@@ -31,7 +31,7 @@ export default function PasswordReset() {
       //save accessToken
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       // toast.error(error?.response?.data?.message || "registration failed")
       setError(error?.response?.data?.message || "Registration failed");
     },

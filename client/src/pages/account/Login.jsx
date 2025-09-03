@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validateSignInSchema } from "@/utils/dataSchema";
+import { useNavigate } from "react-router";
 import { loginUser } from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -20,6 +21,7 @@ export default function Login() {
   });
 
   const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState(null);
   const {
     register,
     handleSubmit,
@@ -30,10 +32,10 @@ export default function Login() {
   const togglePassword = () => {
     setIsVisible((prev) => !prev);
   };
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, user } = useAuth();
+  const navigate = useNavigate();
   //   const queryClient = useQueryClient(); //initializing our queryClient from tanstack
   //mutations are for create, update or delete actions
-  const [error, setError] = useState(null);
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (response) => {
@@ -41,9 +43,12 @@ export default function Login() {
       toast.success(response?.data?.message || "Login successful");
       //save accessToken
       setAccessToken(response?.data?.data?.accessToken);
+      if (!user?.isVerified) {
+        navigate("/verify-account");
+      }
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       // toast.error(error?.response?.data?.message || "registration failed")
       setError(error?.response?.data?.message || "Login failed");
     },
@@ -124,12 +129,12 @@ export default function Login() {
                   // this above takes the password argument we created in our dataSchema
                 )}
               </fieldset>
-              <a
+              <Link
                 className="text-blue-500 text-sm font-bold"
-                href="/account/password-reset"
+                to="/account/password-reset"
               >
                 Forgot Password?
-              </a>
+              </Link>
             </div>
             <div>
               <button

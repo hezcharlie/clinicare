@@ -71,7 +71,7 @@ export default function OTP() {
       setSuccess(true);
     },
     onError: (error) => {
-      console.log(error);
+     import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Account verification failed");
     },
   });
@@ -82,7 +82,7 @@ export default function OTP() {
       toast.success(response?.data?.message || "Verification token sent");
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Verification code failed");
     },
   });
@@ -92,6 +92,12 @@ export default function OTP() {
     mutation.mutate({ verificationToken, accessToken });
   };
 
+const redirect = ()=> {
+    if(user?.role === "patient") {
+     navigate("/patients-onboard")
+    }
+    navigate("/patients-onboard")
+  }
   const handleResendCode = async (e) => {
     e.preventDefault();
     const newTimer = 60;
@@ -104,6 +110,7 @@ export default function OTP() {
     }
     sendResendToken.mutate(accessToken);
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-6rem)] gap-2">
@@ -113,16 +120,14 @@ export default function OTP() {
             <img src="/Success.svg" alt="success" className="w-full h-full" />
             <h1 className="text-2xl font-bold">Congratulations!</h1>
             <p className="text-gray-600">
-              {user?.isVerified
-                ? "Your account has already been verified."
-                : "Your account has been verified successfully."}
+                : "Your account has been verified successfully."
             </p>
             <button
               className="btn my-4 bg-blue-500 hover:bg-blue-600 text-white cursor-pointer"
               size="lg"
-              onClick={() => navigate("/", { replace: true })}
+              onClick={redirect}
             >
-              Go back to home
+              Continue
             </button>
           </div>
         </>

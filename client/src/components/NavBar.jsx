@@ -4,8 +4,8 @@ import { getTimeBasedGreeting } from "@/utils/constants";
 export default function NavBar({ user }) {
   const greeting = getTimeBasedGreeting();
   return (
-    <div className="hidden lg:block bg-white border border-zinc-200 rounded-full sticky top-2 left-[200px] right-0 backdrop-blur supports-[backdrop-filter]:bg-white/60 ">
-      <div className="flex items-center justify-between mx-auto max-w-7xl px-4">
+    <div className="hidden lg:block bg-white/50 border border-zinc-200 rounded-full sticky top-2 left-[200px] z-30 right-0 backdrop-blur supports-[backdrop-filter]:bg-white/60 mx-4">
+      <div className="flex items-center justify-between mx-auto max-w-7xl p-2 h-[60px] px-4">
         <h2 className="text-lg text-zinc-800 font-semibold">
           {greeting}, {user?.fullname}!👋
         </h2>
@@ -23,15 +23,14 @@ export default function NavBar({ user }) {
               {user?.avatar ? (
                 <img
                   src={user?.avatar}
-                  alt={user?.Fullname.split(" ")(0).charAt(0)}
+                  alt={user?.fullname.split(" ")[0].charAt(0)}
                   referrerPolicy="no-referrer"
                   loading="lazy"
                   priority="high"
                 />
               ) : (
                 <span className="text-sm">
-                  {user?.fullname
-                    ?.split(" ")
+                  {user?.fullname?.split(" ")
                     .map((name) => name[0])
                     .join("")
                     .toUpperCase()}

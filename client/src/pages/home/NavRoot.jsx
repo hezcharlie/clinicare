@@ -8,7 +8,7 @@ export default function NavBar() {
   className={({ isActive,}) =>
     isActive ? " text-blue-500" : "text-zinc-600 hover:text-blue-600 transition"
   }>Features</Link> 
-        <Link  to=""
+        <Link  to="#how-it-works"
   className= " text-zinc-600 hover:text-blue-600 transition"
   >How it works</Link>
         <Link

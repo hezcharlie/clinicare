@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { validateSignUpSchema } from "@/utils/dataSchema";
+import { useNavigate } from "react-router";
 import { registerUser } from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import ErrorAlert from "@/components/ErrorAlert";
 import { useAuth } from "@/contextStore";
 import { Link } from "react-router";
-
 
 export default function SignUp() {
   useMetaArgs({
@@ -19,9 +19,8 @@ export default function SignUp() {
       "Create your Clinicare account for easy management of your health",
     keywords: "Clinicare, Register, Account,",
   });
-
-
   const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState(null);
   const {
     register,
     handleSubmit,
@@ -29,10 +28,10 @@ export default function SignUp() {
   } = useForm({
     resolver: zodResolver(validateSignUpSchema),
   });
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, user } = useAuth();
+  const navigate = useNavigate();
   //   const queryClient = useQueryClient(); //initializing our queryClient from tanstack
   //mutations are for create, update or delete actions
-  const [error, setError] = useState(null);
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (response) => {
@@ -40,9 +39,12 @@ export default function SignUp() {
       toast.success(response?.data?.message || "Registration successful");
       //save accessToken
       setAccessToken(response?.data?.data?.accessToken);
+      if (!user?.isVerified) {
+        navigate("/verify-account")
+      }
     },
     onError: (error) => {
-      console.log(error);
+     import.meta.env.DEV && console.log(error);
       // toast.error(error?.response?.data?.message || "registration failed")
       setError(error?.response?.data?.message || "Registration failed");
     },
@@ -58,11 +60,12 @@ export default function SignUp() {
     //     toast.error(errorMessage);
     // }
   };
+
   return (
     <div className="min-h-[75vh] md:min-h-[81vh] gap-2 flex items-center justify-center px-4 pb-1">
       <div className="w-full max-w-[400px] bg-white p-4 rounded-xl shadow">
         <form
-        onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col items-center gap-2 w-full"
           data-discover="true"
         >
@@ -81,36 +84,39 @@ export default function SignUp() {
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Full Name</legend>
                 <input
-                {...register("fullname")}
+                  {...register("fullname")}
                   className="input input-md w-full"
                   type="fullname"
                   placeholder="Full Name"
                   id="Fullname"
                   name="fullname"
                   errors={errors}
-                />{errors?.fullname?.message && (
-                    <p className="text-red-500 text-sm mt-1">{errors?.fullname?.message}</p>
-                    // this above takes the fullname argument we created in our dataSchema 
+                />
+                {errors?.fullname?.message && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors?.fullname?.message}
+                  </p>
+                  // this above takes the fullname argument we created in our dataSchema
                 )}
-
               </fieldset>
             </div>
             <div>
               <fieldset className="fieldset">
                 <legend className="fieldset-legend">Email</legend>
                 <input
-                {...register("email")}
+                  {...register("email")}
                   className="input input-md w-full undefine"
                   type="email"
                   placeholder="Email"
                   id="email"
                   name="email"
-                 
                   errors={errors}
                 />
                 {errors?.email?.message && (
-                    <p className="text-red-500 text-sm mt-1">{errors?.email?.message}</p>
-                    // this above takes the email argument we created in our dataSchema 
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors?.email?.message}
+                  </p>
+                  // this above takes the email argument we created in our dataSchema
                 )}
               </fieldset>
             </div>
@@ -118,24 +124,26 @@ export default function SignUp() {
               <fieldset className="fieldset relative">
                 <legend className="fieldset-legend">Password</legend>
                 <input
-                {...register("password")}
-                 type={isVisible ? "text" : "password"}
+                  {...register("password")}
+                  type={isVisible ? "text" : "password"}
                   className="input w-full input-md"
                   id="password"
                   name="password"
                   placeholder="Password"
-                
                   errors={errors}
                 />
                 <button
-                type="button"
-                onClick={() => setIsVisible((prev) => !prev)}
-                 className=" right-2 top-4 border-0 focus:outline-none cursor-pointer font-semibold absolute ">
+                  type="button"
+                  onClick={() => setIsVisible((prev) => !prev)}
+                  className=" right-2 top-4 border-0 focus:outline-none cursor-pointer font-semibold absolute "
+                >
                   {isVisible ? "Hide" : "Show"}
                 </button>
                 {errors?.password?.message && (
-                    <p className="text-red-500 text-sm mt-1">{errors?.password?.message}</p>
-                    // this above takes the password argument we created in our dataSchema 
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors?.password?.message}
+                  </p>
+                  // this above takes the password argument we created in our dataSchema
                 )}
               </fieldset>
             </div>
