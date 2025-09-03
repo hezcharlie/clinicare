@@ -69,8 +69,8 @@ export default function Appointments() {
             <ErrorAlert error={error?.response?.data?.message} />
           ) : (
             <>
-              {appointment?.length > 0 ? (
-                <>
+              {/* {appointment?.length > 0 ? ( */}
+                
                   <Suspense fallback={<SkeletonTable />}>
                     <AdminTable appointment={appointment} />
                   </Suspense>
@@ -80,12 +80,12 @@ export default function Appointments() {
                     handlePageChange={handlePageChange}
                     currentPage={currentPage}
                   />
-                </>
-              ) : (
+                
+              {/* ) : (
                 <p className="mt-6  font-semibold text-center">
                   No appointments found
                 </p>
-              )}
+              )} */}
             </>
           )}
         </>

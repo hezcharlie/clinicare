@@ -57,8 +57,8 @@ export default function PatientsAppointment() {
                 <ErrorAlert error={error?.response?.data?.message} />
               ) : (
                 <>
-                  {patientsAppointment?.length > 0 ? (
-                    <>
+                  {/* {patientsAppointment?.length > 0 ? (
+                    <> */}
                       <Suspense fallback={<SkeletonTable />}>
                         <PatientAppTable patientsAppointment={patientsAppointment} />
                       </Suspense>
@@ -68,12 +68,12 @@ export default function PatientsAppointment() {
                         handlePageChange={handlePageChange}
                         currentPage={currentPage}
                       />
-                    </>
+                    {/* </>
                   ) : (
                     <p className="mt-6 font-semibold text-center">
                       No rooms found
                     </p>
-                  )}
+                  )} */}
                 </>
               )}
             </>
